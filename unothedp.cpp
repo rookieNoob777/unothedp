@@ -207,6 +207,97 @@ public:
 
 		return max_profit;
 	}
+
+	// 70. Climbing Stairs
+	int climbStairs(int n)
+	{
+		vector<int> ways = { 0, 1, 2 };
+		if(n >= ways.size())
+		{
+			for(int i = ways.size(); i <= n; i++)
+			{
+				ways.push_back(ways[i-1] + ways[i-2]);
+			}
+		}
+
+		return ways[n];
+    }
+
+	// 746. Min Cost Climbing Stairs
+	int minCostClimbingStairs(vector<int>& cost)
+	{
+        int n = cost.size();
+		if(0 == n)
+			return 0;
+        else if(1 == n)
+			return cost.front();
+
+		vector<int> dp(2*n);
+
+		dp[0] = cost[0];
+		dp[1] = cost[1];
+		dp[2] = INT_MAX;
+		dp[3] = cost[1];
+
+		int len = 4;
+
+		for(int i = 2; i < n; i++)
+		{
+			dp[len] = min(dp[len-3], dp[len-4]) + cost[i];
+			dp[len+1] = min(dp[len-1], dp[len-2]) + cost[i];
+			len += 2;
+		}
+
+		return min(min(dp[len-1], dp[len-2]), min(dp[len-3], dp[len-4]));
+    }
+
+	// 413. Arithmetic Slices
+	int numberOfArithmeticSlices(vector<int>& A)
+	{
+        int n = A.size();
+
+		if(3 > n)
+			return 0;
+
+		vector<int> dp(n, 0);
+
+		for(int i = 2; i < n; i++)
+		{
+			if(A[i]-A[i-1] == A[i-1]-A[i-2])
+				dp[i] = dp[i-1] + 1;
+		}
+        
+		int num = 0;
+		for(int i = 2; i < n; i++)
+			num += dp[i];
+		
+		return num;
+    }
+
+	// 300. Longest Increasing Subsequence
+	// dp[i] does not represent the length of the longest increasing subsequence made of the first i elements.
+	// dp[i] represents the length of the longest increasing subsequence which ending with the ith element.
+	int lengthOfLIS(vector<int>& nums)
+	{
+		int n = nums.size();
+		if(0 == n)
+			return 0;
+
+		vector<int> dp(n, 1);
+		int max_len = 1;
+
+		for(int i = 1; i < n; i++)
+		{
+			for(int j = i - 1; j >= 0; j--)
+			{
+				if(nums[i] > nums[j])
+					dp[i] = max(dp[i], dp[j]+1);
+			}
+			max_len = max(max_len, dp[i]);
+		}
+
+		return max_len;
+	}
 };
 
 int main()
@@ -261,34 +352,34 @@ int main()
 	// cout << "Max profit: " << solu.maxProfitAtMostTwoTransactions(prices) << endl << endl;
 
 	// 188. Best Time to Buy and Sell Stock IV (at Most K Transactions)
-	vector<int> prices = { 3,3,5,0,0,3,1,4 };
-	prices = { 2,4,1 };
-	prices = { 3,2,6,5,0,3 };
-	cout << "prices: [ ";
-	printContainer(prices);
-	cout << " ]" << endl;
-	int k = -1;
-	while (k <= 0)
-	{
-		cout << "Transacions: ";
-		cin >> k;
-	}
-	cout << "Max profit: " << solu.maxProfitAtMostKTransactions(k, prices) << endl << endl;
+	// vector<int> prices = { 3,3,5,0,0,3,1,4 };
+	// prices = { 2,4,1 };
+	// prices = { 3,2,6,5,0,3 };
+	// cout << "prices: [ ";
+	// printContainer(prices);
+	// cout << " ]" << endl;
+	// int k = -1;
+	// while (k <= 0)
+	// {
+	// 	cout << "Transacions: ";
+	// 	cin >> k;
+	// }
+	// cout << "Max profit: " << solu.maxProfitAtMostKTransactions(k, prices) << endl << endl;
 
 	// 70. Climbing Stairs
 	// int n;
 	// while (1)
 	// {
-	//  cout << "How many stairs do you wanna climb: ";
-	//  cin >> n;
-	//  cout << "For total " << n << " stairs, distinct ways: " << solu.climbStairs(n) << endl << endl;
+	// 	cout << "How many stairs do you wanna climb: ";
+	// 	cin >> n;
+	// 	cout << "For total " << n << " stairs, distinct ways: " << solu.climbStairs(n) << endl << endl;
 	// }
 
 	// 746. Min Cost Climbing Stairs
 	// vector<int> cost;
 	// cost = { 10, 15, 20 };
-	// //cost = { 1, 100, 1, 1, 1, 100, 1, 1, 100, 1 };
-	// cost = { 1, 0, 0, 0 };
+	// cost = { 1, 100, 1, 1, 1, 100, 1, 1, 100, 1 };
+	// // cost = { 1, 0, 0, 0 };
 	// cout << "Minimum  cost: " << solu.minCostClimbingStairs(cost) << endl << endl;
 
 	// 413. Arithmetic Slices
@@ -299,8 +390,9 @@ int main()
 	// cout << "Number of arithmetic slices: " << solu.numberOfArithmeticSlices(A) << endl << endl;
 
 	// 300. Longest Increasing Subsequence
-	// vector<int> nums = { 10,9,2,5,3,7,101,18 };
-	// cout << "Length of longest increasing subsequence: " << solu.lengthOfLIS(nums) << endl << endl;
+	vector<int> nums = { 10,9,2,5,3,7,101,18 };
+	nums = { 4,10,4,3,8,9 };
+	cout << "Length of longest increasing subsequence: " << solu.lengthOfLIS(nums) << endl << endl;
 
 	// 646. Maximum Length of Pair Chain
 	// vector<vector<int>> pairs;
