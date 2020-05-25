@@ -120,37 +120,90 @@ public:
 		if(0 == n)
 			return 0;
 		
-		vector<vector<int>> dp(n+1, vector<int>(5, INT_MIN));
+		vector<int> dp1(5, INT_MIN);
+		vector<int> dp2(5);
 
-		dp[0][0] = 0;
+		dp1[0] = 0;
 
-		for(int i = 1; i <= n; i++)
+		for(int i = 0; i < n; i++)
 		{
 			for(int j = 0; j < 5; j++)
 			{
+				dp2[j] = dp1[j];
+
 				if(j%2) // buy
 				{
-					dp[i][j] = dp[i-1][j];
-					if(dp[i-1][j-1] != INT_MIN)
-						dp[i][j] = max(dp[i][j], dp[i-1][j-1] - prices[i-1]);		
+					if(dp1[j-1] != INT_MIN)
+						dp2[j] = max(dp2[j], dp1[j-1] - prices[i]);
 				}
-				else  // sell
+				else // sell
 				{
-					if(0 == j)
-						dp[i][j] = 0;
-					else
-					{
-						dp[i][j] = dp[i-1][j];
-						if(dp[i-1][j-1] != INT_MIN)
-							dp[i][j] = max(dp[i][j], dp[i-1][j-1] + prices[i-1]);
-					}
+					if(j >= 1 && dp1[j-1] != INT_MIN)
+						dp2[j] = max(dp2[j], dp1[j-1] + prices[i]);	
 				}
 			}
+
+			swap(dp1, dp2);
 		}
 
-		int max_profit = dp[n][0];
+		int max_profit = dp1[0];
 		for(int i = 2; i < 5; i+=2)
-			max_profit = max(max_profit, dp[n][i]);
+			max_profit = max(max_profit, dp1[i]);
+
+		return max_profit;
+	}
+
+	// 188. Best Time to Buy and Sell Stock IV (at Most K Transactions)
+	int maxProfitAtMostKTransactions(int k, vector<int>& prices)
+	{
+		int n = prices.size();
+		if(2 > n)
+			return 0;
+		
+		int max_profit = 0;
+
+		if(k >= n/2)
+		{
+			for(int i = 1; i < n; i++)
+			{
+				if(prices[i] > prices[i-1])
+					max_profit += prices[i] - prices[i-1];
+			}
+			return max_profit;
+		}
+
+		int phases = k*2 + 1;
+
+		vector<int> dp1(phases, INT_MIN);
+		vector<int> dp2(phases);
+
+		dp1[0] = 0;
+
+		for(int i = 0; i < n; i++)
+		{
+			dp2[0] = 0;
+
+			for(int j = 1; j < phases; j++)
+			{
+				dp2[j] = dp1[j];
+
+				if(j%2) // buy
+				{
+					if(dp1[j-1] != INT_MIN)
+						dp2[j] = max(dp2[j], dp1[j-1] - prices[i]);
+				}
+				else // sell
+				{
+					if(dp1[j-1] != INT_MIN)
+						dp2[j] = max(dp2[j], dp1[j-1] + prices[i]);
+				}
+			}
+
+			swap(dp1, dp2);
+		}
+
+		for(int i = 0; i < phases; i += 2)
+			max_profit = max(max_profit, dp1[i]);
 
 		return max_profit;
 	}
@@ -201,14 +254,14 @@ int main()
 	// cout << "Max profit: " << solu.maxProfitWithTransactionFee(prices, fee) << endl << endl;
 
 	// 123. Best Time to Buy and Sell Stock III (at Most Two Transactions)
-	vector<int> prices = { 3,3,5,0,0,3,1,4 };
-	cout << "prices: [ ";
-	printContainer(prices);
-	cout << " ]" << endl;
-	cout << "Max profit: " << solu.maxProfitAtMostTwoTransactions(prices) << endl << endl;
+	// vector<int> prices = { 3,3,5,0,0,3,1,4 };
+	// cout << "prices: [ ";
+	// printContainer(prices);
+	// cout << " ]" << endl;
+	// cout << "Max profit: " << solu.maxProfitAtMostTwoTransactions(prices) << endl << endl;
 
 	// 188. Best Time to Buy and Sell Stock IV (at Most K Transactions)
-	/*vector<int> prices = { 3,3,5,0,0,3,1,4 };
+	vector<int> prices = { 3,3,5,0,0,3,1,4 };
 	prices = { 2,4,1 };
 	prices = { 3,2,6,5,0,3 };
 	cout << "prices: [ ";
@@ -217,10 +270,10 @@ int main()
 	int k = -1;
 	while (k <= 0)
 	{
-	cout << "Transacions: ";
-	cin >> k;
+		cout << "Transacions: ";
+		cin >> k;
 	}
-	cout << "Max profit: " << solu.maxProfitAtMostKTransactions(k, prices) << endl << endl;*/
+	cout << "Max profit: " << solu.maxProfitAtMostKTransactions(k, prices) << endl << endl;
 
 	// 70. Climbing Stairs
 	// int n;
