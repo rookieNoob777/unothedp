@@ -276,28 +276,174 @@ public:
 
 	// 300. Longest Increasing Subsequence
 	// dp[i] does not represent the length of the longest increasing subsequence made of the first i elements.
-	// dp[i] represents the length of the longest increasing subsequence which ending with the ith element.
+	// dp[i] represents the length of the longest increasing subsequence ending at the ith element.
+	// T=O(n^2)
+	// int lengthOfLIS(vector<int>& nums)
+	// {
+	// 	int n = nums.size();
+	// 	if(0 == n)
+	// 		return 0;
+
+	// 	vector<int> dp(n, 1);
+	// 	int max_len = 1;
+
+	// 	for(int i = 1; i < n; i++)
+	// 	{
+	// 		for(int j = i - 1; j >= 0; j--)
+	// 		{
+	// 			if(nums[i] > nums[j])
+	// 				dp[i] = max(dp[i], dp[j]+1);
+	// 		}
+	// 		max_len = max(max_len, dp[i]);
+	// 	}
+
+	// 	return max_len;
+	// }
+
+	// T=O(nlogn)
+	int findIdxOfNumInLIS(vector<int>& lis, int num)
+	{
+		int head = 0, tail = lis.size();
+
+		while(head < tail)
+		{
+			int mid = head + (tail-head)/2;
+			if(num == lis[mid])
+				return mid;
+			else if(num > lis[mid])
+				head = mid + 1;
+			else
+				tail = mid;
+		}
+
+		return head;
+	}
+
 	int lengthOfLIS(vector<int>& nums)
 	{
 		int n = nums.size();
+		if(0 == n)
+			return 0;
+		
+		vector<int> lis;
+
+		for(auto num : nums)
+		{
+			int idx = findIdxOfNumInLIS(lis, num);
+			if(lis.size() == idx)
+				lis.push_back(num);
+			else
+				lis[idx] = num;	
+		}
+
+		return lis.size();
+	}
+
+	// 646. Maximum Length of Pair Chain
+	static bool cmpPairs(const vector<int>& a, const vector<int>& b)
+	{
+		return a[0] < b[0];
+	}
+
+	int findLongestChain(vector<vector<int>>& pairs)
+	{
+        int n = pairs.size();
 		if(0 == n)
 			return 0;
 
 		vector<int> dp(n, 1);
 		int max_len = 1;
 
+		sort(pairs.begin(), pairs.end(), cmpPairs);
+
 		for(int i = 1; i < n; i++)
 		{
-			for(int j = i - 1; j >= 0; j--)
+			for(int j = i-1; j >= 0; j--)
 			{
-				if(nums[i] > nums[j])
+				if(pairs[i][0] > pairs[j][1])
 					dp[i] = max(dp[i], dp[j]+1);
 			}
 			max_len = max(max_len, dp[i]);
 		}
 
 		return max_len;
-	}
+    }
+
+	// 376. Wiggle Subsequence
+	int wiggleMaxLength(vector<int>& nums)
+	{
+		int n = nums.size();
+		if(0 == n)
+			return 0;
+
+		int lw = 1;
+		int rw = 1;
+
+		for(int i = 1; i < n; i++)
+		{
+			if(nums[i] > nums[i-1])
+				rw = lw + 1;
+			else if(nums[i] < nums[i-1])
+				lw = rw + 1;
+		}
+
+		return max(lw, rw);
+    }
+
+	// 198. House Robber
+	int rob(vector<int>& nums)
+	{
+        int n = nums.size();
+		if(0 == n)
+			return 0;
+		else if(1 == n)
+			return nums.front();
+		else if(2 == n)
+			return max(nums[0], nums[1]);
+
+		vector<int> dp(n);
+		dp[0] = nums[0];
+		dp[1] = nums[1];
+		dp[2] = nums[0] + nums[2];
+
+		for(int i = 3; i < n; i++)
+			dp[i] = nums[i] + max(dp[i-2], dp[i-3]);
+
+		return max(dp[n-1], dp[n-2]);
+    }
+
+	// 213. House Robber II
+	int robII(vector<int>& nums)
+	{
+        int n = nums.size();
+		if(0 == n)
+			return 0;
+		else if(1 == n)
+			return nums.front();
+		else if(2 == n)
+			return max(nums[0], nums[1]);
+		else if(3 == n)
+			return *max_element(nums.begin(), nums.end());
+
+		vector<int> dp1(n); // rob from first to the second from last
+		vector<int> dp2(n); // rob from second to last
+
+		dp1[0] = nums[0];
+		dp1[1] = nums[1];
+		dp1[2] = nums[0] + nums[2];
+
+		dp2[0] = 0;
+		dp2[1] = nums[1];
+		dp2[2] = nums[2];
+
+		for(int i = 3; i < n; i++)
+        {
+			dp1[i] = nums[i] + max(dp1[i-2], dp1[i-3]);
+			dp2[i] = nums[i] + max(dp2[i-2], dp2[i-3]);
+		}
+
+		return max(max(dp1[n-2], dp1[n-3]), max(dp2[n-1], dp2[n-2]));
+    }
 };
 
 int main()
@@ -390,9 +536,12 @@ int main()
 	// cout << "Number of arithmetic slices: " << solu.numberOfArithmeticSlices(A) << endl << endl;
 
 	// 300. Longest Increasing Subsequence
-	vector<int> nums = { 10,9,2,5,3,7,101,18 };
-	nums = { 4,10,4,3,8,9 };
-	cout << "Length of longest increasing subsequence: " << solu.lengthOfLIS(nums) << endl << endl;
+	// vector<int> nums = { 10,9,2,5,3,7,101,18 };
+	// nums = { 4,10,4,3,8,9 };
+	// cout << "nums: [ ";
+	// printContainer(nums);
+	// cout << " ]" << endl;
+	// cout << "Length of longest increasing subsequence: " << solu.lengthOfLIS(nums) << endl << endl;
 
 	// 646. Maximum Length of Pair Chain
 	// vector<vector<int>> pairs;
@@ -427,14 +576,14 @@ int main()
 	// cout << "Maximum amount of robbery: " << solu.rob(nums) << endl << endl;
 
 	// 213. House Robber II
-	// vector<int> nums;
-	// nums = { 1,2,3,1 };
-	// nums = { 2,7,9,3,1 };
-	// //nums = { 1,2,3,1,7,6,5,9,2,2,6 };
-	// cout << "Money amount list: [ ";
-	// printContainer(nums);
-	// cout << " ]" << endl;
-	// cout << "Maximum amount of robbery: " << solu.robII(nums) << endl << endl;
+	vector<int> nums;
+	nums = { 1,2,3,1 };
+	nums = { 2,7,9,3,1 };
+	//nums = { 1,2,3,1,7,6,5,9,2,2,6 };
+	cout << "Money amount list: [ ";
+	printContainer(nums);
+	cout << " ]" << endl;
+	cout << "Maximum amount of robbery: " << solu.robII(nums) << endl << endl;
 
 	// 53. Maximum Subarray
 	// vector<int> nums = { -2,1,-3,4,-1,2,1,-5,4 };
