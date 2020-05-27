@@ -444,6 +444,40 @@ public:
 
 		return max(max(dp1[n-2], dp1[n-3]), max(dp2[n-1], dp2[n-2]));
     }
+
+	// 53. Maximum Subarray
+	int maxSubArray(vector<int>& nums)
+	{
+        int n = nums.size();
+		if(0 == n)
+			return 0;
+
+		int sum = nums[0];
+		int max_sum = sum;
+
+		for(int i = 1; i < n; i++)
+		{
+			sum = max(sum + nums[i], nums[i]);
+			max_sum = max(max_sum, sum);
+		}
+
+		return max_sum;
+    }
+
+	
+
+};
+
+// 303. Range Sum Query - Immutable
+class NumArray {
+public:
+    NumArray(vector<int>& nums) {
+        
+    }
+    
+    int sumRange(int i, int j) {
+        
+    }
 };
 
 int main()
@@ -576,38 +610,41 @@ int main()
 	// cout << "Maximum amount of robbery: " << solu.rob(nums) << endl << endl;
 
 	// 213. House Robber II
-	vector<int> nums;
-	nums = { 1,2,3,1 };
-	nums = { 2,7,9,3,1 };
-	//nums = { 1,2,3,1,7,6,5,9,2,2,6 };
-	cout << "Money amount list: [ ";
-	printContainer(nums);
-	cout << " ]" << endl;
-	cout << "Maximum amount of robbery: " << solu.robII(nums) << endl << endl;
+	// vector<int> nums;
+	// nums = { 1,2,3,1 };
+	// nums = { 2,7,9,3,1 };
+	// //nums = { 1,2,3,1,7,6,5,9,2,2,6 };
+	// cout << "Money amount list: [ ";
+	// printContainer(nums);
+	// cout << " ]" << endl;
+	// cout << "Maximum amount of robbery: " << solu.robII(nums) << endl << endl;
 
 	// 53. Maximum Subarray
 	// vector<int> nums = { -2,1,-3,4,-1,2,1,-5,4 };
+	// cout << "Money amount list: [ ";
+	// printContainer(nums);
+	// cout << " ]" << endl;
 	// cout << "Maximum Subarray: " << solu.maxSubArray(nums) << endl << endl;
 
 	// 303. Range Sum Query - Immutable
-	// vector<int> nums;
-	// nums = { -2, 0, 3, -5, 2, -1 };
-	// int i,j; // indices i and j (i <= j)
-	// NumArray* na = new NumArray(nums);
+	vector<int> nums;
+	nums = { -2, 0, 3, -5, 2, -1 };
+	int i,j; // indices i and j (i <= j)
+	NumArray* na = new NumArray(nums);
 
-	// while(1)
-	// {
-	//  cout << "Input index i: ";
-	//  cin >> i;
-	//  while(1)
-	//  {
-	//      cout << "Input index j: ";
-	//      cin >> j;
-	//      if(i <= j)
-	//          break;
-	//  }
-	//  cout << "The sum of elements between indices " << i << " and " << j << ": " << na->sumRange(i, j) << endl << endl;
-	// }
+	while(1)
+	{
+		cout << "Input index i: ";
+		cin >> i;
+		while(1)
+		{
+			cout << "Input index j: ";
+			cin >> j;
+			if(i <= j)
+				break;
+		}
+		cout << "The sum of elements between indices " << i << " and " << j << ": " << na->sumRange(i, j) << endl << endl;
+	}
 
 	// 304. Range Sum Query 2D - Immutable
 	// vector<vector<int>> matrix;
