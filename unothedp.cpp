@@ -471,14 +471,52 @@ public:
 // 303. Range Sum Query - Immutable
 class NumArray {
 public:
+	vector<int> dp;
+
     NumArray(vector<int>& nums) {
-        
+        int n = nums.size();
+		if(0 == n)
+			return;
+
+		dp.resize(n+1, 0);
+
+		for(int i = 1; i <= n; i++)
+			dp[i] = dp[i-1] + nums[i-1];
     }
     
     int sumRange(int i, int j) {
-        
+        return dp[j+1] - dp[i];
     }
 };
+
+// 304. Range Sum Query 2D - Immutable
+class NumMatrix {
+public:
+	vector<vector<int>> dp;
+
+    NumMatrix(vector<vector<int>>& matrix) {
+        int row = matrix.size();
+		if(0 == row)
+			return;
+		
+		int col = matrix.front().size();
+		if(0 == col)
+			return;
+
+		dp.resize(row+1, vector<int>(col+1, 0));
+
+		for(int i = 1; i <= row; i++)
+		{
+			for(int j = 1; j <= col; j++)
+				dp[i][j] = dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1] + matrix[i-1][j-1]; 
+		}
+    }
+    
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        return dp[row2+1][col2+1] - dp[row1][col2+1] - dp[row2+1][col1] + dp[row1][col1];
+    }
+};
+
 
 int main()
 {
@@ -627,59 +665,59 @@ int main()
 	// cout << "Maximum Subarray: " << solu.maxSubArray(nums) << endl << endl;
 
 	// 303. Range Sum Query - Immutable
-	vector<int> nums;
-	nums = { -2, 0, 3, -5, 2, -1 };
-	int i,j; // indices i and j (i <= j)
-	NumArray* na = new NumArray(nums);
-
-	while(1)
-	{
-		cout << "Input index i: ";
-		cin >> i;
-		while(1)
-		{
-			cout << "Input index j: ";
-			cin >> j;
-			if(i <= j)
-				break;
-		}
-		cout << "The sum of elements between indices " << i << " and " << j << ": " << na->sumRange(i, j) << endl << endl;
-	}
-
-	// 304. Range Sum Query 2D - Immutable
-	// vector<vector<int>> matrix;
-	// matrix = {
-	//  { 3, 0, 1, 4, 2 },
-	//  { 5, 6, 3, 2, 1 },
-	//  { 1, 2, 0, 1, 5 },
-	//  { 4, 1, 0, 1, 7 },
-	//  { 1, 0, 3, 0, 5 }
-	// };
-	// int row1, col1, row2, col2;
-	// NumMatrix* nm = new NumMatrix(matrix);
+	// vector<int> nums;
+	// nums = { -2, 0, 3, -5, 2, -1 };
+	// int i,j; // indices i and j (i <= j)
+	// NumArray* na = new NumArray(nums);
 
 	// while(1)
 	// {
-	//  cout << "row1: ";
-	//  cin >> row1;
-	//  cout << "col1: ";
-	//  cin >> col1;
-	//  while(1)
-	//  {
-	//      cout << "row2: ";
-	//      cin >> row2;
-	//      if(row1 <= row2)
-	//          break;
-	//  }
-	//  while(1)
-	//  {
-	//      cout << "col2: ";
-	//      cin >> col2;
-	//      if(col1 <= col2)
-	//          break;
-	//  }
-	//  cout << "Sum of region ((" << row1 << "," << col1 << "),(" << row2 << "," << col2 << ")): " << nm->sumRegion(row1, col1, row2, col2) << endl << endl;
+	// 	cout << "Input index i: ";
+	// 	cin >> i;
+	// 	while(1)
+	// 	{
+	// 		cout << "Input index j: ";
+	// 		cin >> j;
+	// 		if(i <= j)
+	// 			break;
+	// 	}
+	// 	cout << "The sum of elements between indices " << i << " and " << j << ": " << na->sumRange(i, j) << endl << endl;
 	// }
+
+	// 304. Range Sum Query 2D - Immutable
+	vector<vector<int>> matrix;
+	matrix = {
+		{ 3, 0, 1, 4, 2 },
+		{ 5, 6, 3, 2, 1 },
+		{ 1, 2, 0, 1, 5 },
+		{ 4, 1, 0, 1, 7 },
+		{ 1, 0, 3, 0, 5 }
+	};
+	int row1, col1, row2, col2;
+	NumMatrix* nm = new NumMatrix(matrix);
+
+	while(1)
+	{
+		cout << "row1: ";
+		cin >> row1;
+		cout << "col1: ";
+		cin >> col1;
+		while(1)
+		{
+			cout << "row2: ";
+			cin >> row2;
+			if(row1 <= row2)
+				break;
+		}
+		while(1)
+		{
+			cout << "col2: ";
+			cin >> col2;
+			if(col1 <= col2)
+				break;
+		}
+		cout << "Sum of region ((" << row1 << "," << col1 << "),(" << row2 << "," << col2 << ")): " << nm->sumRegion(row1, col1, row2, col2) << endl << endl;
+	}
 
 	// 1218. Longest Arithmetic Subsequence of Given Difference
 	/*vector<int> arr;
