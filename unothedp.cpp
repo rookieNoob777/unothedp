@@ -464,8 +464,8 @@ public:
 		return max_sum;
     }
 
+	// 1218. Longest Arithmetic Subsequence of Given Difference
 	
-
 };
 
 // 303. Range Sum Query - Immutable
@@ -685,52 +685,52 @@ int main()
 	// }
 
 	// 304. Range Sum Query 2D - Immutable
-	vector<vector<int>> matrix;
-	matrix = {
-		{ 3, 0, 1, 4, 2 },
-		{ 5, 6, 3, 2, 1 },
-		{ 1, 2, 0, 1, 5 },
-		{ 4, 1, 0, 1, 7 },
-		{ 1, 0, 3, 0, 5 }
-	};
-	int row1, col1, row2, col2;
-	NumMatrix* nm = new NumMatrix(matrix);
+	// vector<vector<int>> matrix;
+	// matrix = {
+	// 	{ 3, 0, 1, 4, 2 },
+	// 	{ 5, 6, 3, 2, 1 },
+	// 	{ 1, 2, 0, 1, 5 },
+	// 	{ 4, 1, 0, 1, 7 },
+	// 	{ 1, 0, 3, 0, 5 }
+	// };
+	// int row1, col1, row2, col2;
+	// NumMatrix* nm = new NumMatrix(matrix);
 
-	while(1)
-	{
-		cout << "row1: ";
-		cin >> row1;
-		cout << "col1: ";
-		cin >> col1;
-		while(1)
-		{
-			cout << "row2: ";
-			cin >> row2;
-			if(row1 <= row2)
-				break;
-		}
-		while(1)
-		{
-			cout << "col2: ";
-			cin >> col2;
-			if(col1 <= col2)
-				break;
-		}
-		cout << "Sum of region ((" << row1 << "," << col1 << "),(" << row2 << "," << col2 << ")): " << nm->sumRegion(row1, col1, row2, col2) << endl << endl;
-	}
+	// while(1)
+	// {
+	// 	cout << "row1: ";
+	// 	cin >> row1;
+	// 	cout << "col1: ";
+	// 	cin >> col1;
+	// 	while(1)
+	// 	{
+	// 		cout << "row2: ";
+	// 		cin >> row2;
+	// 		if(row1 <= row2)
+	// 			break;
+	// 	}
+	// 	while(1)
+	// 	{
+	// 		cout << "col2: ";
+	// 		cin >> col2;
+	// 		if(col1 <= col2)
+	// 			break;
+	// 	}
+	// 	cout << "Sum of region ((" << row1 << "," << col1 << "),(" << row2 << "," << col2 << ")): " << nm->sumRegion(row1, col1, row2, col2) << endl << endl;
+	// }
 
 	// 1218. Longest Arithmetic Subsequence of Given Difference
-	/*vector<int> arr;
+	vector<int> arr;
 	arr = { 1,2,3,4 };
 	arr = { 1,5,7,8,5,3,4,2,1 };
 	int difference;
 
 	while (1)
 	{
-	cout << "Difference: ";
-	cin >> difference;
-	cout << "The lengh of longest arithmetic subsequence for difference " << difference << " is: " << solu.longestSubsequence(arr, difference) << endl << endl;
-	}*/
+		cout << "Difference: ";
+		cin >> difference;
+		cout << "The lengh of longest arithmetic subsequence for difference " << difference << " is: " << solu.longestSubsequence(arr, difference) << endl << endl;
+	}
 
 
 	// 392. Is Subsequence
