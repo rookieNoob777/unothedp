@@ -465,6 +465,32 @@ public:
     }
 
 	// 1218. Longest Arithmetic Subsequence of Given Difference
+<<<<<<< HEAD
+=======
+	int longestSubsequence(vector<int>& arr, int difference)
+	{
+		int n = arr.size();
+		if(0 == n)
+			return 0;
+		
+		int max_len = 1;
+		unordered_map<int, int> ss_len;
+
+		for(int num : arr)
+		{
+			int prev_num = num - difference;
+			if(ss_len[prev_num])
+			{
+				ss_len[num] = ss_len[prev_num] + 1;
+				max_len = max(max_len, ss_len[num]);
+			}
+			else
+				ss_len[num] = 1;
+		}
+
+		return max_len;
+    }
+>>>>>>> da4f664... lap2 running
 	
 };
 
@@ -731,7 +757,10 @@ int main()
 		cin >> difference;
 		cout << "The lengh of longest arithmetic subsequence for difference " << difference << " is: " << solu.longestSubsequence(arr, difference) << endl << endl;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> da4f664... lap2 running
 
 	// 392. Is Subsequence
 	/*string t = "ahbgdc";
