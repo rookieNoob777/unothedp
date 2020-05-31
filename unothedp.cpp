@@ -465,8 +465,6 @@ public:
     }
 
 	// 1218. Longest Arithmetic Subsequence of Given Difference
-<<<<<<< HEAD
-=======
 	int longestSubsequence(vector<int>& arr, int difference)
 	{
 		int n = arr.size();
@@ -490,8 +488,100 @@ public:
 
 		return max_len;
     }
->>>>>>> da4f664... lap2 running
 	
+	// 392. Is Subsequence
+	bool isSubsequence(string s, string t)
+	{
+		int start_pos = 0;
+
+		for(char c : s)
+		{
+			start_pos = t.find(c, start_pos);
+			if(start_pos == string::npos)
+				return false;
+			start_pos++;
+		}
+
+		return true;
+    }
+
+	// 1143. Longest Common Subsequence
+	int longestCommonSubsequence(string text1, string text2)
+	{
+		int n1 = text1.length();
+		int n2 = text2.length();
+
+		if(0 == n1 || 0 == n2)
+			return 0;
+		
+		vector<int> dp1(n2+1, 0);
+		vector<int> dp2(n2+1, 0);
+
+		for(char c1 : text1)
+		{
+			for(int i = 1; i <= n2; i++)
+			{
+				if(c1 == text2[i-1])
+					dp2[i] = dp1[i-1] + 1;
+				else
+					dp2[i] = max(dp1[i], dp2[i-1]);
+			}
+			swap(dp1, dp2);
+		}
+
+		return dp1[n2];
+    }
+
+	// 1092. Shortest Common Supersequence
+	string shortestCommonSupersequence(string str1, string str2)
+	{
+		int n1 = str1.length();
+		if(0 == n1)
+			return str2;
+		int n2 = str2.length();
+		if(0 == n2)
+			return str1;
+
+		vector<vector<int>> dp(n1+1, vector<int>(n2+1, 0));
+		int i, j;
+
+		for(i = 1; i <= n1; i++)
+		{
+			for(j = 1; j <= n2; j++)
+			{
+				if(str1[i-1] == str2[j-1])
+					dp[i][j] = dp[i-1][j-1] + 1;
+				else
+					dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+			}
+		}
+		
+		if(0 == dp[n1][n2])
+			return str1 + str2;
+
+		i--;
+		j--;
+		deque<char> scs;
+		char c;
+
+		while(i || j)
+		{
+			if(!i)
+				c = str2[--j];
+			else if(!j)
+				c = str1[--i];
+			else if(str1[i-1] == str2[j-1])
+				c = str1[--i] = str2[--j];
+			else if(dp[i][j] == dp[i-1][j])
+				c = str1[--i];
+			else if(dp[i][j] == dp[i][j-1])
+				c = str2[--j];
+			
+			scs.push_front(c);
+		}
+
+		return {begin(scs), end(scs)};
+	}
 };
 
 // 303. Range Sum Query - Immutable
@@ -746,47 +836,43 @@ int main()
 	// }
 
 	// 1218. Longest Arithmetic Subsequence of Given Difference
-	vector<int> arr;
-	arr = { 1,2,3,4 };
-	arr = { 1,5,7,8,5,3,4,2,1 };
-	int difference;
+	// vector<int> arr;
+	// arr = { 1,2,3,4 };
+	// arr = { 1,5,7,8,5,3,4,2,1 };
+	// int difference;
 
-	while (1)
-	{
-		cout << "Difference: ";
-		cin >> difference;
-		cout << "The lengh of longest arithmetic subsequence for difference " << difference << " is: " << solu.longestSubsequence(arr, difference) << endl << endl;
-	}
-<<<<<<< HEAD
-
-=======
->>>>>>> da4f664... lap2 running
+	// while (1)
+	// {
+	// 	cout << "Difference: ";
+	// 	cin >> difference;
+	// 	cout << "The lengh of longest arithmetic subsequence for difference " << difference << " is: " << solu.longestSubsequence(arr, difference) << endl << endl;
+	// }
 
 	// 392. Is Subsequence
-	/*string t = "ahbgdc";
-	string s;
+	// string t = "ahbgdc";
+	// string s;
 
-	while (1)
-	{
-	cout << "String t: " << t << endl;
-	cout << "Inuput string s: ";
-	cin >> s;
-	cout << "s is a subsequence of t: " << (solu.isSubsequence(s, t) ? "true" : "false") << endl << endl;
-	}*/
+	// while (1)
+	// {
+	// 	cout << "String t: " << t << endl;
+	// 	cout << "Inuput string s: ";
+	// 	cin >> s;
+	// 	cout << "s is a subsequence of t: " << (solu.isSubsequence(s, t) ? "true" : "false") << endl << endl;
+	// }
 
 	// 1143. Longest Common Subsequence
-	/*string text1 = "abcde";
-	string text2 = "ace";
-	cout << "String1: " << text1 << endl;
-	cout << "String2: " << text2 << endl;
-	cout << "Length of longest common subsequence is: " << solu.longestCommonSubsequence(text1, text2) << endl << endl;*/
+	// string text1 = "abcde";
+	// string text2 = "ace";
+	// cout << "String1: " << text1 << endl;
+	// cout << "String2: " << text2 << endl;
+	// cout << "Length of longest common subsequence is: " << solu.longestCommonSubsequence(text1, text2) << endl << endl;
 
 	// 1092. Shortest Common Supersequence
-	// string str1 = "cijkchc";
-	// string str2 = "hcijkc";
-	// cout << "String1: " << str1 << endl;
-	// cout << "String2: " << str2 << endl;
-	// cout << "Shortest Common Supersequence: " << solu.shortestCommonSupersequence(str1, str2) << endl << endl;
+	string str1 = "cijkchc";
+	string str2 = "hcijkc";
+	cout << "String1: " << str1 << endl;
+	cout << "String2: " << str2 << endl;
+	cout << "Shortest Common Supersequence: " << solu.shortestCommonSupersequence(str1, str2) << endl << endl;
 
 	// 1062. Longest Repeating Substring todo(lock)
 
