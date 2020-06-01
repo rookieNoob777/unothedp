@@ -582,6 +582,169 @@ public:
 
 		return {begin(scs), end(scs)};
 	}
+
+	// 5. Longest Palindromic Substring
+	int lenOfPalindromic(string &s, int l, int r)
+	{
+		while(l >= 0 && r < s.length() && s[l] == s[r])
+			l--, r++;
+		
+		return r-l-1;
+	}
+
+	string longestPalindrome(string s)
+	{
+		int n = s.length();
+		if(0 == n)
+			return s;
+
+		int start_pos = 0;
+		int max_len = 0;
+
+		for(int i = 0; i < n; i++)
+		{
+			if(max_len > 2*(n-i)-1)
+				break;
+
+			int len = max(lenOfPalindromic(s, i, i), lenOfPalindromic(s, i, i+1));
+			if(len > max_len)
+			{
+				start_pos = i - (len-1)/2;
+				max_len = len;
+			}
+		}
+
+		return s.substr(start_pos, max_len);
+    }
+
+	// 516. Longest Palindromic Subsequence
+	int longestPalindromeSubseq(string s)
+	{
+		int n = s.length();
+		if(0 == n)
+			return 0;
+		
+		vector<int> dp1(n+1, 0);
+		vector<int> dp2(n+1, 0);
+
+		for(char c : s)
+		{
+			for(int i = 1; i <= n; i++)
+			{
+				if(c == s[n - i])
+					dp2[i] = dp1[i-1] + 1;
+				else
+					dp2[i] = max(dp1[i], dp2[i-1]);
+			}
+
+			swap(dp1, dp2);
+		}
+
+		return dp1[n];
+    }
+
+	// 583. Delete Operation for Two Strings
+	//  find the minimum number of steps required to make word1 and word2 the same, where in each step you can delete one character in either string.
+	/*
+	In order to determine the minimum number of delete operations needed, we can make use of the length of the longest common sequence among
+	the two given strings s1 and s2, say given by lcs. If we can find this lcs value, we can easily determine the required result
+	as m + n - 2*lcs. Here, m and n refer to the length of the two given strings s1 and s2.
+
+	The above equation works because in case of complete mismatch(i.e. if the two strings can't be equalized at all), the total number of delete
+	operations required will be m + n. Now, if there is a common sequence among the two strings of length lcs, we need to do lcs lesser deletions
+	in both the strings leading to a total of 2lcs lesser deletions, which then leads to the above equation.
+	*/
+	int minDeleteDistance(string word1, string word2)
+	{
+		int n1 = word1.length();
+		int n2 = word2.length();
+
+		if(0 == n1 && 0 == n2)
+			return 0;
+		else if(0 == n1)
+			return n2;
+		else if(0 == n2)
+			return n1;
+
+		vector<int> dp1(n2+1, 0);
+		vector<int> dp2(n2+1, 0);
+
+		for(char c : word1)
+		{
+			for(int i = 1; i <= n2; i++)
+			{
+				if(c == word2[i-1])
+					dp2[i] = dp1[i-1] + 1;
+				else
+					dp2[i] = max(dp1[i], dp2[i-1]);
+			}
+			swap(dp1, dp2);
+		}
+
+		return n1 + n2 - 2*dp1[n2];
+	}
+
+	// 72. Edit Distance
+	int minEditDistance(string word1, string word2)
+	{
+		int n1 = word1.length();
+		int n2 = word2.length();
+
+		if(0 == n1 && 0 == n2)
+			return 0;
+		else if(0 == n1)
+			return n2;
+		else if(0 == n2)
+			return n1;
+
+		vector<vector<int>> dp(n1, vector<int>(n2, 0));
+
+		for(int i = 0; i < n1; i++)
+		{
+			if(word1[i] == word2[0])
+				dp[i][0] = i;
+			else
+			{
+				if(0 == i)
+					dp[i][0] = 1;
+				else
+					dp[i][0] = dp[i-1][0] + 1;
+			}
+		}
+
+		for(int i = 0; i < n2; i++)
+		{
+			if(word2[i] == word1[0])
+				dp[0][i] = i;
+			else
+			{
+				if(0 == i)
+					dp[0][i] = 1;
+				else
+					dp[0][i] = dp[0][i-1] + 1;	
+			}
+		}
+
+		for(int i = 1; i < n1; i++)
+		{
+			for(int j = 1; j < n2; j++)
+			{
+				if(word1[i] == word2[j])
+					dp[i][j] = dp[i-1][j-1];
+				else
+					dp[i][j] = min(dp[i-1][j-1], min(dp[i-1][j], dp[i][j-1])) + 1;
+			}
+		}
+
+		return dp[n1-1][n2-1];
+	}
+
+	// 650. 2 Keys Keyboard
+	int minStepsWith2KeysKeyboard(int n)
+	{
+		
+        
+    }
 };
 
 // 303. Range Sum Query - Immutable
@@ -868,11 +1031,11 @@ int main()
 	// cout << "Length of longest common subsequence is: " << solu.longestCommonSubsequence(text1, text2) << endl << endl;
 
 	// 1092. Shortest Common Supersequence
-	string str1 = "cijkchc";
-	string str2 = "hcijkc";
-	cout << "String1: " << str1 << endl;
-	cout << "String2: " << str2 << endl;
-	cout << "Shortest Common Supersequence: " << solu.shortestCommonSupersequence(str1, str2) << endl << endl;
+	// string str1 = "cijkchc";
+	// string str2 = "hcijkc";
+	// cout << "String1: " << str1 << endl;
+	// cout << "String2: " << str2 << endl;
+	// cout << "Shortest Common Supersequence: " << solu.shortestCommonSupersequence(str1, str2) << endl << endl;
 
 	// 1062. Longest Repeating Substring todo(lock)
 
@@ -909,17 +1072,16 @@ int main()
 	// cout << "Minimal edit distance: " << solu.minEditDistance(word1, word2) << endl << endl;
 
 	// 650. 2 Keys Keyboard
-	// while(1)
-	// {
-	//  int n = 0;
-	//  while(n <= 0)
-	//  {
-	//      cout << "Number of 'A': ";
-	//      cin >> n;
-	//  }
-	//  cout << "Minimal steps with 2 keys keyboard: " << solu.minStepsWith2KeysKeyboard(n) << endl << endl;
-	// }
-
+	while(1)
+	{
+		int n = 0;
+		while(n <= 0)
+		{
+			cout << "Number of 'A': ";
+			cin >> n;
+		}
+		cout << "Minimal steps with 2 keys keyboard: " << solu.minStepsWith2KeysKeyboard(n) << endl << endl;
+	}
 
 	/*
 		0/1 Bag
