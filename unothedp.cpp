@@ -740,10 +740,49 @@ public:
 	}
 
 	// 650. 2 Keys Keyboard
+	// dp[i][j] represents the minimum number of steps to get j 'A' when there are i 'A' in the notepad at this moment.
+	// The permitted operations are to copy the i 'A' only once and then paste multiple times.
+	// int minStepsWith2KeysKeyboard(int n)
+	// {
+	// 	if(n < 2)
+	// 		return 0;
+
+	// 	vector<int> dp1(n+1, 0);
+	// 	vector<int> dp2(n+1, 0);
+
+	// 	for(int i = 2; i <= n; i++)
+	// 		dp1[i] = i;
+			
+    //     for(int i = 2; i <= n/2; i++)
+	// 	{
+	// 		for(int j = i; j <= n; j++)
+	// 		{
+	// 			dp2[j] = dp1[j];
+	// 			if(j > i && j%i == 0)
+	// 				dp2[j] = min(dp2[j], dp2[i] + j/i);
+	// 		}
+	// 		swap(dp1, dp2);
+	// 	}
+
+	// 	return dp1[n];
+    // }
+
 	int minStepsWith2KeysKeyboard(int n)
 	{
-		
-        
+		vector<int> dp(n+1, 0);
+
+        for(int i = 2; i <= n; i++)
+		{
+			dp[i] = i;
+
+			for(int j = 2; j <= i; j++)
+			{
+				if(i%j == 0)
+					dp[i] = min(dp[i], dp[j]+i/j);
+			}
+		}
+
+		return dp[n];
     }
 };
 
