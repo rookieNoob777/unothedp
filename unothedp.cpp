@@ -784,6 +784,83 @@ public:
 
 		return dp[n];
     }
+
+	// 62. Unique Paths
+	int uniquePaths(int m, int n)
+	{
+		vector<int> dp1(n+1, 0);
+		vector<int> dp2(n+1, 0);
+
+		dp1[1] = 1;
+
+		for(int i = 0; i < m; i++)
+		{
+			for(int j = 1; j <= n; j++)
+				dp2[j] = dp1[j] + dp2[j-1];
+
+			swap(dp1, dp2); 
+		}
+
+		return dp1[n];
+    }
+
+	// 64. Minimum Path Sum
+	int minPathSum(vector<vector<int>>& grid)
+	{
+		int n = grid.size();
+		if(0 == n)
+			return 0;
+		int m = grid.front().size();
+		if(0 == m)
+			return 0;
+
+		for(int i = 0; i < n; i++)
+		{
+			for(int j = 0; j < m; j++)
+			{
+				if(0 == i && 0 == j)
+					continue;
+				else if(0 == i)
+					grid[i][j] += grid[i][j-1];
+				else if(0 == j)
+					grid[i][j] += grid[i-1][j];
+				else
+					grid[i][j] += min(grid[i-1][j], grid[i][j-1]);
+			}
+		}
+
+		return grid[n-1][m-1];
+    }
+
+	// 63. Unique Paths II
+	int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+	{
+		int n = obstacleGrid.size();
+		if(0 == n)
+			return 0;
+		int m = obstacleGrid.front().size();
+		if(0 == m)
+			return 0;
+		
+		vector<int> dp1(m+1, 0);
+		vector<int> dp2(m+1, 0);
+
+		dp1[1] = 1;
+
+		for(int i = 0; i < n; i++)
+		{
+			for(int j = 1; j <= m; j++)
+			{
+				if(1 == obstacleGrid[i][j-1])
+					dp2[j] = 0;
+				else
+					dp2[j] = dp1[j] + dp2[j-1]; 
+			}
+			swap(dp1, dp2);
+		}
+
+		return dp1[m];
+    }
 };
 
 // 303. Range Sum Query - Immutable
@@ -1111,16 +1188,16 @@ int main()
 	// cout << "Minimal edit distance: " << solu.minEditDistance(word1, word2) << endl << endl;
 
 	// 650. 2 Keys Keyboard
-	while(1)
-	{
-		int n = 0;
-		while(n <= 0)
-		{
-			cout << "Number of 'A': ";
-			cin >> n;
-		}
-		cout << "Minimal steps with 2 keys keyboard: " << solu.minStepsWith2KeysKeyboard(n) << endl << endl;
-	}
+	// while(1)
+	// {
+	// 	int n = 0;
+	// 	while(n <= 0)
+	// 	{
+	// 		cout << "Number of 'A': ";
+	// 		cin >> n;
+	// 	}
+	// 	cout << "Minimal steps with 2 keys keyboard: " << solu.minStepsWith2KeysKeyboard(n) << endl << endl;
+	// }
 
 	/*
 		0/1 Bag
@@ -1472,56 +1549,54 @@ int main()
 	// 62. Unique Paths
 	// while(1)
 	// {
-	//  int m = 0;
-	//  int n = 0;
+	// 	int m = 0;
+	// 	int n = 0;
 
-	//  while (m <= 0)
-	//  {
-	//      cout << "m: ";
-	//      cin >> m;
-	//  }
+	// 	while (m <= 0)
+	// 	{
+	// 		cout << "m: ";
+	// 		cin >> m;
+	// 	}
+	// 	while (n <= 0)
+	// 	{
+	// 		cout << "n: ";
+	// 		cin >> n;
+	// 	}
 
-	//  while (n <= 0)
-	//  {
-	//      cout << "n: ";
-	//      cin >> n;
-	//  }
-
-	//  cout << "Number of unique paths: " << solu.uniquePaths(m, n) << endl << endl;
+	// 	cout << "Number of unique paths: " << solu.uniquePaths(m, n) << endl << endl;
 	// }
 
 	// 64. Minimum Path Sum
 	// vector<vector<int>> grid;
 	// grid = {
-	//  { 1,3,1 },
-	//  { 1,5,1 },
-	//  { 4,2,1 }
+	// 	{ 1,3,1 },
+	// 	{ 1,5,1 },
+	// 	{ 4,2,1 }
 	// };
 	// cout << "Grid:" << endl;
 	// for(auto row : grid)
 	// {
-	//  cout << "[ ";
-	//  printContainer(row);
-	//  cout << " ]" << endl;
+	// 	cout << "[ ";
+	// 	printContainer(row);
+	// 	cout << " ]" << endl;
 	// }
 	// cout << "Minimum Path Sum: " << solu.minPathSum(grid) << endl << endl;
 
 	// 63. Unique Paths II
-	// vector<vector<int>> obstacleGrid;
-	// obstacleGrid = {
-	//  { 0,0,0 },
-	//  { 0,1,0 },
-	//  { 0,0,0 }
-	// };
-
-	// cout << "obstacleGrid:" << endl;
-	// for(auto row : obstacleGrid)
-	// {
-	//  cout << "[ ";
-	//  printContainer(row);
-	//  cout << " ]" << endl;
-	// }
-	// cout << "Number of unique paths: " << solu.uniquePathsWithObstacles(obstacleGrid) << endl << endl;
+	vector<vector<int>> obstacleGrid;
+	obstacleGrid = {
+		{ 0,0,0 },
+		{ 0,1,0 },
+		{ 0,0,0 }
+	};
+	cout << "obstacleGrid:" << endl;
+	for(auto row : obstacleGrid)
+	{
+		cout << "[ ";
+		printContainer(row);
+		cout << " ]" << endl;
+	}
+	cout << "Number of unique paths: " << solu.uniquePathsWithObstacles(obstacleGrid) << endl << endl;
 
 	// 887. Super Egg Drop
 	// while (1)
