@@ -861,6 +861,47 @@ public:
 
 		return dp1[m];
     }
+
+	// 887. Super Egg Drop
+	int superEggDrop(int K, int N)
+	{
+		if(1 == K || N < 3)
+			return N;
+
+		vector<int> dp1(N+1, 0);
+		vector<int> dp2(N+1, 0);
+
+		for(int i = 1; i <= N; i++)
+			dp1[i] = i;
+
+		for(int k = 2; k <= K; k++)
+		{
+			/*
+				More eggs and more steps will increase the number of floors could be tested.
+				With constant eggs, the number of floors could be tested will increase along with the increasing steps.
+				But increasing eggs cannot increase the number of tested floors when the number of steps is constant.
+				The number of tested floors would start increasing from the spot where k == m.
+			*/
+			for(int m = k; m <= N; m++)
+			{
+				if(m == k)
+					dp2[m] = dp1[m-1]*2 + 1;
+				else
+					dp2[m] = dp1[m-1] + dp2[m-1] + 1;
+				
+				if(dp2[m] >= N)
+				{
+					if(k == K || m == k)
+						return m;
+					break;
+				}
+			}
+
+			swap(dp1, dp2);
+		}
+        
+		return 0;
+    }
 };
 
 // 303. Range Sum Query - Immutable
@@ -1583,38 +1624,38 @@ int main()
 	// cout << "Minimum Path Sum: " << solu.minPathSum(grid) << endl << endl;
 
 	// 63. Unique Paths II
-	vector<vector<int>> obstacleGrid;
-	obstacleGrid = {
-		{ 0,0,0 },
-		{ 0,1,0 },
-		{ 0,0,0 }
-	};
-	cout << "obstacleGrid:" << endl;
-	for(auto row : obstacleGrid)
-	{
-		cout << "[ ";
-		printContainer(row);
-		cout << " ]" << endl;
-	}
-	cout << "Number of unique paths: " << solu.uniquePathsWithObstacles(obstacleGrid) << endl << endl;
+	// vector<vector<int>> obstacleGrid;
+	// obstacleGrid = {
+	// 	{ 0,0,0 },
+	// 	{ 0,1,0 },
+	// 	{ 0,0,0 }
+	// };
+	// cout << "obstacleGrid:" << endl;
+	// for(auto row : obstacleGrid)
+	// {
+	// 	cout << "[ ";
+	// 	printContainer(row);
+	// 	cout << " ]" << endl;
+	// }
+	// cout << "Number of unique paths: " << solu.uniquePathsWithObstacles(obstacleGrid) << endl << endl;
 
 	// 887. Super Egg Drop
-	// while (1)
-	// {
-	//  int K = 0, N = 0;
-	//  while (K <= 0)
-	//  {
-	//      cout << "Number of eggs: ";
-	//      cin >> K;
-	//  }
-	//  while (N <= 0)
-	//  {
-	//      cout << "Number of floors: ";
-	//      cin >> N;
-	//  }
+	while (1)
+	{
+		int K = 0, N = 0;
+		while (K <= 0)
+		{
+			cout << "Number of eggs: ";
+			cin >> K;
+		}
+		while (N <= 0)
+		{
+			cout << "Number of floors: ";
+			cin >> N;
+		}
 
-	//  cout << "Minimal number of moves: " << solu.superEggDrop(K, N) << endl << endl;
-	// }
+		cout << "Minimal number of moves: " << solu.superEggDrop(K, N) << endl << endl;
+	}
 
 	DOCK();
 
