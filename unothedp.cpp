@@ -785,6 +785,214 @@ public:
 		return dp[n];
     }
 
+	// 416. Partition Equal Subset Sum
+	bool canPartition(vector<int>& nums)
+	{
+		int n = nums.size();
+		if (0 == n)
+			return true;
+
+		int sum = accumulate(nums.begin(), nums.end(), 0);
+		if (sum%2)
+			return false;
+
+		sum /= 2;
+
+		vector<int> dp(sum+1, 0);
+		dp[0] = 1;
+
+		for (int num : nums)
+		{
+			if (num > sum)
+				return false;
+			
+			for (int i = sum; i >= num; i--)
+			{
+				if (dp[i - num])
+				{
+					if (i == sum)
+						return true;
+					dp[i] = 1;
+				}
+			}
+		}
+
+		return false;
+    }
+
+	// 494. Target Sum
+	int findTargetSumWays(vector<int>& nums, int S)
+	{
+		int n = nums.size();
+		if (0 == n)
+			return 0;
+		else if (1 == n)
+			return (nums[0] == abs(S));
+
+		int sum = accumulate(nums.begin(), nums.end(), 0);
+		if(abs(S) > sum)
+			return 0;
+
+		int o_idx = sum;
+		sum *= 2;
+		vector<int> dp1(sum+1, 0);
+		vector<int> dp2(sum+1, 0);
+		
+		dp1[o_idx] = 1;
+
+		for (int num : nums)
+		{
+			for (int i = 0; i <= sum; i++)
+			{
+				if (i - num >= 0 && i + num <= sum)
+					dp2[i] = dp1[i-num] + dp1[i+num];
+				else if (i - num >= 0)
+					dp2[i] = dp1[i-num];
+				else if (i + num <= sum)
+					dp2[i] = dp1[i+num];
+			}
+
+			swap(dp1, dp2);
+		}
+
+		return dp1[o_idx + S];
+    }
+
+	// 474. Ones and Zeroes
+	// int findMaxForm(vector<string>& strs, int m, int n)
+	// {
+	// 	if (strs.empty())
+	// 		return 0;
+		
+	// 	vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+
+	// 	for (auto str : strs)
+	// 	{
+	// 		int zeroes = count(str.begin(), str.end(), '0');
+	// 		int ones = count(str.begin(), str.end(), '1');
+
+	// 		for (int i = m; i >= zeroes; i--)
+	// 		{
+	// 			for (int j = n; j >= ones; j--)
+	// 				dp[i][j] = max(dp[i][j], dp[i - zeroes][j - ones] + 1);
+	// 		}
+	// 	}
+
+	// 	return dp[m][n];
+	// }
+
+	int findMaxForm(vector<string>& strs, int m, int n)
+	{
+		if (strs.empty())
+			return 0;
+
+		vector<vector<int>> dp(m+1, vector<int>(n+1, INT_MIN));
+		int max_form = 0;
+
+		dp[0][0] = 0;
+
+		for (auto str : strs)
+		{
+			int zeroes = count(str.begin(), str.end(), '0');
+			int ones = count(str.begin(), str.end(), '1');
+
+			for (int i = m; i >= zeroes; i--)
+			{
+				for (int j = n; j >= ones; j--)
+				{
+					if (dp[i-zeroes][j-ones] != INT_MIN)
+					{
+						dp[i][j] = max(dp[i][j], dp[i-zeroes][j-ones] + 1);
+						max_form = max(max_form, dp[i][j]);
+					}	
+				}	
+			}
+		}
+
+		return max_form;
+    }
+
+	// AcWing 2. 01 Bag Question
+	int maxWorthFor01Bag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> dp(V+1, 0);
+
+		for (int i = 0; i < N; i++)
+		{
+			int v, w;
+			cin >> v;
+			cin >> w;
+
+			for (int j = V; j >= v; j--)
+				dp[j] = max(dp[j], dp[j - v] + w);
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
+
+	// 322. Coin Change
+	int coinChange(vector<int>& coins, int amount)
+	{
+		vector<int> dp(amount+1, INT_MAX); 
+		dp[0] = 0;
+
+		for (int coin : coins)
+		{
+			for (int i = coin; i <= amount; i++)
+			{
+				if (dp[i - coin] != INT_MAX)
+					dp[i] = min(dp[i], dp[i - coin] + 1);
+			}
+		}
+
+		return (INT_MAX == dp[amount]) ? -1 : dp[amount];
+    }
+
+	// 518. Coin Change 2
+	int change(int amount, vector<int>& coins)
+	{
+		vector<int> dp(amount+1, 0);
+		dp[0] = 1;
+
+		for (int coin : coins)
+		{
+			for (int i = coin; i <= amount; i++)
+				dp[i] += dp[i - coin];
+		}
+
+		return dp[amount];
+    }
+
+	// AcWing 3. Complete Bag Quesiton
+	int maxWorthForCompleteBag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> dp(V+1, 0);
+
+		for (int i = 0; i < N; i++)
+		{
+			int v, w;
+			cin >> v;
+			cin >> w;
+
+			for (int j = v; j <= V; j++)
+				dp[j] = max(dp[j], dp[j - v] + w);
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
+
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
 	{
@@ -1247,7 +1455,7 @@ int main()
 	// 416. Partition Equal Subset Sum
 	// vector<int> nums = { 1, 5, 11, 5 };
 	// nums = { 1,1,2,5,5,5,5 };
-	// nums = { 1, 3, 5 };
+	// // nums = { 1, 3, 5 };
 	// cout << "nums: [ ";
 	// printContainer(nums);
 	// cout << " ]" << endl;
@@ -1265,52 +1473,35 @@ int main()
 	// int S;
 	// while (1)
 	// {
-	//  cout << "Target Sum: ";
-	//  cin >> S;
-	//  cout << "Number of ways to get target sum: " << solu.findTargetSumWays(nums, S) << endl << endl;
+	// 	cout << "Target Sum: ";
+	// 	cin >> S;
+	// 	cout << "Number of ways to get target sum: " << solu.findTargetSumWays(nums, S) << endl << endl;
 	// }
 
 	// 474. Ones and Zeroes
 	// vector<string> strs = { "10", "0001", "111001", "1", "0" };
 	// while(1)
 	// {
-	//  int m = -1;
-	//  int n = -1;
+	// 	int m = -1;
+	// 	int n = -1;
 
-	//  while(m < 0)
-	//  {
-	//      cout << "m: ";
-	//      cin >> m;
-	//  }
+	// 	while(m < 0)
+	// 	{
+	// 		cout << "m: ";
+	// 		cin >> m;
+	// 	}
 
-	//  while(n < 0)
-	//  {
-	//      cout << "n: ";
-	//      cin >> n;
-	//  }
+	// 	while(n < 0)
+	// 	{
+	// 		cout << "n: ";
+	// 		cin >> n;
+	// 	}
 
-	//  cout << "Maximum number of strings: " << solu.findMaxForm(strs, m, n) << endl << endl;
+	// 	cout << "Maximum number of strings: " << solu.findMaxForm(strs, m, n) << endl << endl;
 	// }
 
 	// AcWing 2. 01 Bag Question
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthFor01Bag(v, w, V) << endl << endl;
+	// solu.maxWorthFor01Bag();
 
 	/*
 		Complete Bag
@@ -1335,7 +1526,7 @@ int main()
 	// 518. Coin Change 2
 	// vector<int> coins = { 1,2,5 }; // 5->4
 	// coins = { 2 }; // 3->0
-	// coins = { 186,419,83,408 }; // 6249->19
+	// // coins = { 186,419,83,408 }; // 6249->19
 	// while (1)
 	// {
 	// 	int amount = 0;
@@ -1350,24 +1541,7 @@ int main()
 	// }
 
 	// AcWing 3. Complete Bag Quesiton
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForCompleteBag(v, w, V) << endl << endl;
+	solu.maxWorthForCompleteBag();
 
 	/*
 		Ordered Complete Bag
@@ -1640,24 +1814,24 @@ int main()
 	// cout << "Number of unique paths: " << solu.uniquePathsWithObstacles(obstacleGrid) << endl << endl;
 
 	// 887. Super Egg Drop
-	while (1)
-	{
-		int K = 0, N = 0;
-		while (K <= 0)
-		{
-			cout << "Number of eggs: ";
-			cin >> K;
-		}
-		while (N <= 0)
-		{
-			cout << "Number of floors: ";
-			cin >> N;
-		}
+	// while (1)
+	// {
+	// 	int K = 0, N = 0;
+	// 	while (K <= 0)
+	// 	{
+	// 		cout << "Number of eggs: ";
+	// 		cin >> K;
+	// 	}
+	// 	while (N <= 0)
+	// 	{
+	// 		cout << "Number of floors: ";
+	// 		cin >> N;
+	// 	}
 
-		cout << "Minimal number of moves: " << solu.superEggDrop(K, N) << endl << endl;
-	}
+	// 	cout << "Minimal number of moves: " << solu.superEggDrop(K, N) << endl << endl;
+	// }
 
-	DOCK();
+	// DOCK();
 
 	return 0;
 }
