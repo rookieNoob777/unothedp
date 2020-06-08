@@ -10,6 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <unordered_set>
 #include <numeric>
 
 using namespace std;
@@ -955,6 +956,7 @@ public:
     }
 
 	// 518. Coin Change 2
+	// Same coins in different orders would be thought as 1 combination. So this is unordered complete bag question.
 	int change(int amount, vector<int>& coins)
 	{
 		vector<int> dp(amount+1, 0);
@@ -996,10 +998,60 @@ public:
 	// 139. Word Break
 	// bool wordBreak(string s, vector<string>& wordDict)
 	// {
+	// 	int n = s.length();
+	// 	int m = wordDict.size();
+
+	// 	vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+	// 	dp[0][0] = 1;
+
+	// 	// dp[i][j] represents that whether first i characters were matched by j words (not first j words since each word can be used out of order).
+
+	// 	for (int i = 1; i <= n; i++)
+	// 	{
+	// 		for (int j = 1; j <= m; j++)
+	// 		{
+	// 			int len = wordDict[j-1].length();
+	// 			if (i >= len && s.substr(i-len, len) == wordDict[j-1])
+	// 			{
+	// 				// key logic: One word equals to the end part of first i characters. Whether those characters ahead of this part also were matched by other words?
+	// 				// You know, we can think of "the characters ahead of this part" as the previous sub question. If its solution is true, so dp[i][j] would be true as well.
+	// 				// first way of writing:
+	// 				for (int k = 0; k <= m; k++)
+    //                 {
+    //                     if (dp[i-len][k])
+	// 					{
+    //                         dp[i][j] = 1;
+    //                         break;
+	// 					}
+    //                 }
+	// 				// second way of writing:
+	// 				// for (int k = 0; k <= m; k++)
+	// 				// 	dp[i][j] = dp[i][j] || dp[i-len][k];
+	// 			}
+	// 		}
+	// 	}
+
+	// 	int ret = 0;
+
+	// 	for (int i = 1; i <= m; i++)
+	// 	{
+	// 		// first way of writing:
+	// 		if (dp[n][i])
+	// 			return 1;
+	// 		// second way of writing:
+	// 		// ret = ret || dp[n][i];
+	// 	}
+
+	// 	return ret;
+	// }
+
+	// Depending on above solution, we can simply it by using one-dimension array instead of two-dimension.
+	// bool wordBreak(string s, vector<string>& wordDict)
+	// {
     //     int n = s.length();
 
-	// 	vector<bool> dp(n+1, false);
-	// 	dp[0] = true;
+	// 	vector<int> dp(n+1, 0);
+	// 	dp[0] = 1;
 
 	// 	for (int i = 1; i <= n; i++)
 	// 	{
@@ -1014,29 +1066,50 @@ public:
 	// 	return dp[n];
     // }
 
+	// The thought is to deal with the solution of sub-quesiton.
 	bool wordBreak(string s, vector<string>& wordDict)
 	{
+		unordered_set<string> words(wordDict.begin(), wordDict.end());
 		int n = s.length();
-		int m = wordDict.size();
-
-		vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
-		dp[0][0] = 1;
+		s = " " + s;
+		vector<int> dp(n+1, 0);
+		dp[0] = 1;
 
 		for (int i = 1; i <= n; i++)
 		{
-			for (int j = 1; j <= m; j++)
+			for (int j = 0; j < i; j++)
 			{
-				int len = wordDict[j-1].length();
-				if (i >= len && s.substr(i-len, len) == wordDict[j-1])
+				if (dp[j] && words.count(s.substr(j+1, i-j)))
 				{
-					for (int k = 0; k <= m; k++)
-						dp[i][j] = dp[i][j] || dp[i-len][k];
+					dp[i] = 1;
+					break;
 				}
 			}
 		}
 
-		return dp[n][m];
+		return dp[n];
 	}
+
+	// 377. Combination Sum IV
+	// Contrast with 518. Coin Change 2, this is ordered complete bag question. So that we should iterate through the bag in outer cycle.
+	int combinationSum4(vector<int>& nums, int target)
+	{
+		int n = nums.size();
+
+		vector<unsigned int> dp(target+1, 0);
+		dp[0] = 1;
+
+		for (int i = 1; i <= target; i++) // iterate through the bag
+		{
+			for (int num : nums)
+			{
+				if (i >= num)
+					dp[i] += dp[i - num];
+			}
+		}
+
+		return dp[target];
+    }
 
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
@@ -1596,16 +1669,14 @@ int main()
 	*/
 
 	// 139. Word Break
-	string s = "leetcode";
-	vector<string> wordDict = { "leet", "code" };
-
-	s = "applepenapple";
-	wordDict = { "apple", "pen" };
-
-	cout << "Can be segmented: " << (solu.wordBreak(s, wordDict) ? "true" : "false") << endl << endl;
+	// string s = "leetcode";
+	// vector<string> wordDict = { "leet", "code" };
+	// s = "applepenapple";
+	// wordDict = { "apple", "pen" };
+	// cout << "Can be segmented: " << (solu.wordBreak(s, wordDict) ? "true" : "false") << endl << endl;
 
 	// 377. Combination Sum IV
-	/*vector<int> nums = { 1, 2, 3 };
+	vector<int> nums = { 1, 2, 3 };
 	while (1)
 	{
 		int target = 0;
@@ -1617,7 +1688,7 @@ int main()
 		}
 
 		cout << "Number of combinations: " << solu.combinationSum4(nums, target) << endl << endl;
-	}*/
+	}
 
 	/*
 		Multiple Bag
