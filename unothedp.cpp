@@ -993,6 +993,51 @@ public:
 		return 0;
 	}
 
+	// 139. Word Break
+	// bool wordBreak(string s, vector<string>& wordDict)
+	// {
+    //     int n = s.length();
+
+	// 	vector<bool> dp(n+1, false);
+	// 	dp[0] = true;
+
+	// 	for (int i = 1; i <= n; i++)
+	// 	{
+	// 		for (auto word : wordDict)
+	// 		{
+	// 			int len = word.length();
+	// 			if (i >= len && s.substr(i - len, len) == word)
+	// 				dp[i] = dp[i] || dp[i - len];
+	// 		}
+	// 	}
+
+	// 	return dp[n];
+    // }
+
+	bool wordBreak(string s, vector<string>& wordDict)
+	{
+		int n = s.length();
+		int m = wordDict.size();
+
+		vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+		dp[0][0] = 1;
+
+		for (int i = 1; i <= n; i++)
+		{
+			for (int j = 1; j <= m; j++)
+			{
+				int len = wordDict[j-1].length();
+				if (i >= len && s.substr(i-len, len) == wordDict[j-1])
+				{
+					for (int k = 0; k <= m; k++)
+						dp[i][j] = dp[i][j] || dp[i-len][k];
+				}
+			}
+		}
+
+		return dp[n][m];
+	}
+
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
 	{
@@ -1450,6 +1495,9 @@ int main()
 
 	/*
 		0/1 Bag
+		1. Iterates through the items should be in the outer cycle.
+		2. Iterates through the bag should be in the inner cycle.
+		3. The solutions could be always handled in an one-dimension array(dp[i]), and the bag iteration(inner cycle) should start from back to front in the array.
 	*/
 
 	// 416. Partition Equal Subset Sum
@@ -1541,16 +1589,20 @@ int main()
 	// }
 
 	// AcWing 3. Complete Bag Quesiton
-	solu.maxWorthForCompleteBag();
+	// solu.maxWorthForCompleteBag();
 
 	/*
 		Ordered Complete Bag
 	*/
 
 	// 139. Word Break
-	/*string s = "leetcode";
+	string s = "leetcode";
 	vector<string> wordDict = { "leet", "code" };
-	cout << "Can be segmented: " << (solu.wordBreak(s, wordDict) ? "true" : "false") << endl << endl;*/
+
+	s = "applepenapple";
+	wordDict = { "apple", "pen" };
+
+	cout << "Can be segmented: " << (solu.wordBreak(s, wordDict) ? "true" : "false") << endl << endl;
 
 	// 377. Combination Sum IV
 	/*vector<int> nums = { 1, 2, 3 };
