@@ -928,6 +928,7 @@ public:
 			cin >> v;
 			cin >> w;
 
+			// 0/1 bag, from back to front
 			for (int j = V; j >= v; j--)
 				dp[j] = max(dp[j], dp[j - v] + w);
 		}
@@ -986,6 +987,7 @@ public:
 			cin >> v;
 			cin >> w;
 
+			// complete bag, from front to back
 			for (int j = v; j <= V; j++)
 				dp[j] = max(dp[j], dp[j - v] + w);
 		}
@@ -1110,6 +1112,36 @@ public:
 
 		return dp[target];
     }
+
+	// AcWing 4. Multiple Bag Quesiton
+	int maxWorthForMultipleBag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> dp(V+1, 0);
+
+		for (int i = 0; i < N; i++)
+		{
+			int v, w, s;
+			cin >> v;
+			cin >> w;
+			cin >> s;
+
+			// multiple bag, from back to front
+			for (int j = V; j >= v; j--)
+			{
+				// attempt multiple possibilities
+				for (int k = 1; k <= s && j >= k*v; k++)
+					dp[j] = max(dp[j], dp[j - k*v] + k*w);
+			}
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
 
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
@@ -1676,46 +1708,26 @@ int main()
 	// cout << "Can be segmented: " << (solu.wordBreak(s, wordDict) ? "true" : "false") << endl << endl;
 
 	// 377. Combination Sum IV
-	vector<int> nums = { 1, 2, 3 };
-	while (1)
-	{
-		int target = 0;
+	// vector<int> nums = { 1, 2, 3 };
+	// while (1)
+	// {
+	// 	int target = 0;
 		
-		while (target <= 0)
-		{
-			cout << "target: ";
-			cin >> target;
-		}
+	// 	while (target <= 0)
+	// 	{
+	// 		cout << "target: ";
+	// 		cin >> target;
+	// 	}
 
-		cout << "Number of combinations: " << solu.combinationSum4(nums, target) << endl << endl;
-	}
+	// 	cout << "Number of combinations: " << solu.combinationSum4(nums, target) << endl << endl;
+	// }
 
 	/*
 		Multiple Bag
 	*/
 
 	// AcWing 4. Multiple Bag Quesiton
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-	// vector<int> s(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// 	cout << "Number of the " << i+1 << " good: ";
-	// 	cin >> s[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForMultipleBag(v, w, s, V) << endl << endl;
+	solu.maxWorthForMultipleBag();
 	
 	// AcWing 5. Multiple Bag Question II
 	// int N, V;
