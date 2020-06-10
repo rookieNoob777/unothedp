@@ -1143,6 +1143,59 @@ public:
 		return 0;
 	}
 
+	// AcWing 5. Multiple Bag Question II
+	int maxWorthForMultipleBagII()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> vs;
+		vector<int> ws;
+
+		for (int i = 0; i < N; i++)
+		{
+			int v, w, s;
+			cin >> v;
+			cin >> w;
+			cin >> s;
+
+			// transform multiple bag to 0/1 bag
+			for (int j = 1; j <= s; j *= 2)
+			{
+				vs.push_back(j*v);
+				ws.push_back(j*w);
+				s -= j;
+			}
+			if (s)
+			{
+				vs.push_back(s*v);
+				ws.push_back(s*w);
+			}
+		}
+
+		// solution for 0/1 bag
+		vector<int> dp(V+1, 0);
+
+		for (int i = 0; i < vs.size(); i++)
+		{
+			for (int j = V; j >= vs[i]; j--)
+				dp[j] = max(dp[j], dp[j - vs[i]] + ws[i]);
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
+
+	// AcWing 6. Multiple Bag Question III
+	int maxWorthForMultipleBagIII()
+	{
+		// I don't know !!! heihei
+
+		return 0;
+	}
+
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
 	{
@@ -1727,53 +1780,13 @@ int main()
 	*/
 
 	// AcWing 4. Multiple Bag Quesiton
-	solu.maxWorthForMultipleBag();
+	// solu.maxWorthForMultipleBag();
 	
 	// AcWing 5. Multiple Bag Question II
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-	// vector<int> s(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// 	cout << "Number of the " << i+1 << " good: ";
-	// 	cin >> s[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForMultipleBagII(v, w, s, V) << endl << endl;
+	// solu.maxWorthForMultipleBagII();
 
 	// AcWing 6. Multiple Bag Question III
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-	// vector<int> s(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// 	cout << "Number of the " << i+1 << " good: ";
-	// 	cin >> s[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForMultipleBagIII(v, w, s, V) << endl << endl;
+	solu.maxWorthForMultipleBagIII();
 
 	// AcWing 7. Compound Bag Question
 	// int N, V;
