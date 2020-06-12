@@ -1196,6 +1196,234 @@ public:
 		return 0;
 	}
 
+	// AcWing 7. Compound Bag Question
+	int maxWorthForCompoundBag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> vs;
+		vector<int> ws;
+		vector<int> ss;
+
+		for (int i = 0; i < N; i++)
+		{
+			int v, w, s;
+			cin >> v;
+			cin >> w;
+			cin >> s;
+
+			if(-1 == s)
+			{
+				vs.push_back(v);
+				ws.push_back(w);
+				ss.push_back(-1);
+			}
+			else if (0 == s)
+			{
+				vs.push_back(v);
+				ws.push_back(w);
+				ss.push_back(0);
+			}
+			else if (s > 0)
+			{
+				for (int j = 1; j <= s; j *= 2)
+				{
+					vs.push_back(v*j);
+					ws.push_back(w*j);
+					ss.push_back(-1);
+					s -= j;	
+				}
+				if (s)
+				{
+					vs.push_back(v*s);
+					ws.push_back(w*s);
+					ss.push_back(-1);
+				}
+			}
+		}
+
+		vector<int> dp(V+1);
+
+		for (int i = 0; i < vs.size(); i++)
+		{
+			if (-1 == ss[i])
+			{
+				for (int j = V; j >= vs[i]; j--)
+					dp[j] = max(dp[j], dp[j - vs[i]] + ws[i]);
+			}
+			else
+			{
+				for (int j = vs[i]; j <= V; j++)
+					dp[j] = max(dp[j], dp[j - vs[i]] + ws[i]);
+			}
+			
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
+
+	// AcWing 8. Two Dimensional Bag Question --- V: volume limitation of bag, M: weight limitation of bag
+	int maxWorthForTwoDimensionalBag()
+	{
+		int N, V, M;
+		cin >> N;
+		cin >> V;
+		cin >> M;
+
+		vector<vector<int>> dp(V+1, vector<int>(M+1, 0));
+
+		for(int i = 0; i < N; i++)
+		{
+			int v, m, w;
+			
+			cin >> v;
+			cin >> m;
+			cin >> w;
+
+			for (int j = V; j >= v; j--)
+			{
+				for (int k = M; k >= m; k--)
+					dp[j][k] = max(dp[j][k], dp[j-v][k - m] + w);
+			}
+		}
+
+		cout << dp[V][M];
+
+		return 0;
+	}
+
+	// AcWing 9. Grouping Bag Question
+	int maxWorthForGroupingBag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> dp(V+1, 0);
+
+		for (int i = 0; i < N; i++)
+		{
+			int n;
+			cin >> n;
+
+			vector<int> vs(n, 0);
+			vector<int> ws(n, 0);
+
+			for (int j = 0; j < n; j++)
+			{
+				cin >> vs[j];
+				cin >> ws[j];
+			}
+
+			for (int j = V; j > 0; j--)
+			{
+				for (int k = 0; k < n; k++)
+				{
+					if (j >= vs[k])
+						dp[j] = max(dp[j], dp[j - vs[k]] + ws[k]);
+				}
+			}
+		}
+
+		cout << dp[V];
+
+		return 0;
+	}
+
+	// AcWing 11. Number of Solutions of Bag Question
+	int maxNumberOfSolutionsOfBag()
+	{
+		int mod = 1e9 + 7;
+		int N, V;
+		cin >> N;
+		cin >> V;
+
+		vector<int> W(V+1, INT_MIN);
+		vector<int> S(V+1, 0);
+		W[0] = 0;
+		S[0] = 1;
+
+		for(int i = 0; i < N; i++)
+		{
+			int v, w;
+			cin >> v;
+			cin >> w;
+
+			for (int j = V; j >= v; j--)
+			{
+				int worth = max(W[j], W[j-v]+w);
+				if (worth == W[j-v]+w)
+				{
+					if (worth == W[j])
+						S[j] = (S[j] + S[j-v]) % mod;
+					else
+						S[j] = S[j-v];
+				}
+				W[j] = worth;
+			}
+		}
+
+		int max_worth = *max_element(W.begin(), W.end());
+		int sol_num = 0;
+
+		for (int i = 0; i <= V; i++)
+		{
+			if (W[i] == max_worth)
+				sol_num += S[i];
+		}
+
+		cout << sol_num;
+
+		return 0;
+	}
+
+	// AcWing 12. Solution of Bag Question
+	int solutionOfBag()
+	{
+		int N, V;
+		cin >> N;
+		cin >> V;
+		
+		vector<int> v(N, 0);
+		vector<int> w(N, 0);
+
+		for(int i = 0; i < N; i++)
+		{
+			cin >> v[i];
+			cin >> w[i];
+		}
+
+		vector<vector<int>> dp(N+1, vector<int>(V+1, 0));
+
+		// In general the max worth is stored in the dp[N][V], but the question is looking for the solution of minimum dictionary order,
+		// thus, we must iterate through goods in inverted order to store the max worth into dp[0][V]. 
+		for (int i = N-1; i >= 0; i--)
+		{
+			for (int j = 1; j <= V; j++)
+			{
+				dp[i][j] = dp[i+1][j]; // two-dimensions array, we ought to keep the same results as previous sub-questions for the elements before coordinate v[i].
+				if (j >= v[i])
+					dp[i][j] = max(dp[i][j], dp[i+1][j-v[i]] + w[i]);
+			}
+		}
+
+		// Start from the 1st good to check whether the given good should be chosen. In this way we can obtain the solution of minimum dictionary order.
+		for (int i = 0; i < N; i++)
+		{
+			if (V >= v[i] && dp[i][V] == dp[i+1][V-v[i]] + w[i])
+			{
+				cout << i + 1 << " ";
+				V -= v[i];
+			}
+		}
+
+		return 0;
+	}
+
 	// 62. Unique Paths
 	int uniquePaths(int m, int n)
 	{
@@ -1786,128 +2014,25 @@ int main()
 	// solu.maxWorthForMultipleBagII();
 
 	// AcWing 6. Multiple Bag Question III
-	solu.maxWorthForMultipleBagIII();
+	// solu.maxWorthForMultipleBagIII();
 
 	// AcWing 7. Compound Bag Question
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-	// vector<int> s(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// 	cout << "Number of the " << i+1 << " good: ";
-	// 	cin >> s[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForCompoundBag(v, w, s, V) << endl << endl;
+	// solu.maxWorthForCompoundBag();
 
 	// AcWing 8. Two Dimensional Bag Question --- V: volume limitation of bag, M: weight limitation of bag
-	// int N, V, M;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-	// cout << "Weight of bag: ";
-	// cin >> M;
-
-	// vector<int> v(N, 0);
-	// vector<int> m(N, 0);
-	// vector<int> w(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Weight of the " << i+1 << " good: ";
-	// 	cin >> m[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForTwoDimensionalBag(v, m, w, V, M) << endl << endl;
+	// solu.maxWorthForTwoDimensionalBag();
 
 	// AcWing 9. Grouping Bag Question
-	// int N, V;
-	// cout << "Number of groups of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-
-	// vector<vector<int>> v;
-	// vector<vector<int>> w;
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	int n;
-	// 	cout << "Number of goods of the " << i+1 << " group: ";
-	// 	cin >> n;
-
-	// 	v.push_back(vector<int>(n, 0));
-	// 	w.push_back(vector<int>(n, 0));
-
-	// 	for(int j = 0; j < n; j++)
-	// 	{
-	// 		cout << "Volume of the " << j+1 << " good: ";
-	// 		cin >> v[i][j];
-	// 		cout << "Worth of the " << j+1 << " good: ";
-	// 		cin >> w[i][j];
-	// 	}
-	// }
-
-	// cout << "Max worth: " << solu.maxWorthForGroupingBag(v, w, V) << endl << endl;
+	// solu.maxWorthForGroupingBag();
 
 	// https://www.bilibili.com/video/av34467850/?p=2
 	// AcWing 10. Dependence Bag Question --- Hard --- involve DFS
 
 	// AcWing 11. Number of Solutions of Bag Question
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-	
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// }
-
-	// cout << "Max number of solutions: " << solu.maxNumberOfSolutionsOfBag(v, w, V) << endl << endl;
+	// solu.maxNumberOfSolutionsOfBag();
 
 	// AcWing 12. Solution of Bag Question
-	// int N, V;
-	// cout << "Number of goods: ";
-	// cin >> N;
-	// cout << "Volume of bag: ";
-	// cin >> V;
-	
-	// vector<int> v(N, 0);
-	// vector<int> w(N, 0);
-
-	// for(int i = 0; i < N; i++)
-	// {
-	// 	cout << "Volume of the " << i+1 << " good: ";
-	// 	cin >> v[i];
-	// 	cout << "Worth of the " << i+1 << " good: ";
-	// 	cin >> w[i];
-	// }
-
-	// solu.solutionOfBag(v, w, V);
+	solu.solutionOfBag();
 
 	// 62. Unique Paths
 	// while(1)
